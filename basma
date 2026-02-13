@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Basma | بصمة شراكة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Cairo",sans-serif}
+body{
+    background:#0b0b11;
+    color:#fff;
+    overflow:hidden;
+}
+
+/* خلفية هواء واقعية */
+.particles{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+}
+.particles span{
+    position:absolute;
+    width:4px;height:4px;
+    background:rgba(255,255,255,0.25);
+    border-radius:50%;
+    animation:float 8s linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(100vh)}
+    to{transform:translateY(-10vh)}
+}
+
+/* صفحات */
+.page{
+    width:90%;
+    max-width:520px;
+    margin:40px auto;
+    display:none;
+}
+.page.active{display:block}
+
+/* زجاج */
+.glass{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:20px;
+    padding:26px 22px;
+    backdrop-filter:blur(16px);
+    box-shadow:0 18px 40px rgba(0,0,0,.7);
+    animation:fadeIn .5s ease;
+}
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+/* عناوين */
+h1{
+    text-align:center;
+    margin-bottom:10px;
+    font-size:1.8rem;
+    font-weight:900;
+}
+.sub{
+    text-align:center;
+    opacity:.75;
+    margin-bottom:22px;
+    font-size:.9rem;
+}
+
+/* مدخلات */
+input,textarea{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    margin-bottom:16px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(0,0,0,0.45);
+    color:#fff;
+    font-size:.95rem;
+    transition:.15s ease;
+}
+
+/* تأثير لمس واقعي */
+input:active, textarea:active {
+    transform: scale(0.96);
+    box-shadow:0 0 12px rgba(0,255,255,0.4);
+}
+
+input:focus, textarea:focus {
+    border-color:#0ff;
+    box-shadow:0 0 14px rgba(0,255,255,0.6);
+    animation:glow .3s ease;
+}
+@keyframes glow{
+    from{box-shadow:0 0 0 rgba(0,255,255,0)}
+    to{box-shadow:0 0 14px rgba(0,255,255,0.6)}
+}
+
+input:hover, textarea:hover {
+    box-shadow:0 0 18px rgba(0,255,255,0.25);
+}
+
+/* أزرار */
+.btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:14px;
+    background:#fff;
+    color:#000;
+    font-weight:900;
+    cursor:pointer;
+    transition:.2s;
+}
+.btn:hover{background:#e5e5e5}
+.btn-outline{
+    background:transparent;
+    border:2px solid #fff;
+    color:#fff;
+}
+.actions{display:flex;gap:10px}
+
+/* بصمة + دائرة تحميل */
+.loader-box{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.circle{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    border:6px solid rgba(0,255,255,0.25);
+    border-top-color:#0ff;
+    animation:spin 1.2s linear infinite, pulse 2s infinite ease-in-out;
+    margin-bottom:20px;
+}
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+@keyframes pulse{
+    0%{box-shadow:0 0 0 rgba(0,255,255,0.4)}
+    50%{box-shadow:0 0 25px rgba(0,255,255,0.7)}
+    100%{box-shadow:0 0 0 rgba(0,255,255,0.4)}
+}
+
+#timer{
+    text-align:center;
+    font-size:1.7rem;
+    font-weight:900;
+    margin-top:10px;
+    text-shadow:0 0 10px #0ff;
+}
+
+/* صفحة الطباشير */
+.chalk{
+    font-size:1.7rem;
+    text-align:center;
+    padding:40px 10px;
+    color:#fff;
+    text-shadow:0 0 4px #fff;
+    font-weight:900;
+    animation:shake .4s ease;
+}
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    50%{transform:translateX(6px)}
+    75%{transform:translateX(-6px)}
+    100%{transform:translateX(0)}
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<!-- صفحة تنبيه -->
+<div id="alertPage" class="page">
+  <div class="glass">
+    <div class="chalk">قوم بملء الفراغات</div>
+    <button class="btn" onclick="returnToForm()">رجوع</button>
+  </div>
+</div>
+
+<!-- صفحة 1 -->
+<div id="page1" class="page active">
+  <div class="glass">
+    <h1>طلب شراكة</h1>
+    <div class="sub">الخطوة 1 — بيانات السيرفر</div>
+
+    <input id="serverName" type="text" placeholder="اسم السيرفر">
+    <input id="members" type="number" placeholder="عدد الأعضاء">
+
+    <!-- خيار مفتوح بالكامل -->
+    <input id="serverType" type="text" placeholder="نوع السيرفر (مفتوح)">
+
+    <textarea id="benefit" rows="3" placeholder="الفائدة من الشراكة"></textarea>
+    <textarea id="about" rows="3" placeholder="عن ماذا السيرفر؟"></textarea>
+
+    <button class="btn" onclick="goFingerprint()">التالي</button>
+  </div>
+</div>
+
+<!-- صفحة 2: بصمة + عداد -->
+<div id="page2" class="page">
+  <div class="glass">
+    <h1>جاري التحقق</h1>
+    <div class="sub">انتظر لحظات...</div>
+
+    <div class="loader-box">
+        <div class="circle"></div>
+        <div id="timer">3</div>
+    </div>
+  </div>
+</div>
+
+<!-- صفحة 3 -->
+<div id="page3" class="page">
+  <div class="glass">
+    <h1>إرسال الطلب</h1>
+    <div class="sub">الخطوة الأخيرة</div>
+
+    <input id="discordUser" type="text" placeholder="يوزر ديسكورد">
+
+    <div class="actions">
+        <button class="btn-outline" onclick="backToForm()">رجوع</button>
+        <button class="btn" onclick="sendRequest()">إرسال</button>
+    </div>
+
+    <div id="status" class="sub" style="margin-top:15px;"></div>
+  </div>
+</div>
+
+<!-- صفحة 4 -->
+<div id="page4" class="page">
+  <div class="glass">
+    <h1>تم الإرسال</h1>
+    <div class="sub">سيتم التواصل معك قريباً</div>
+  </div>
+</div>
+
+<script>
+/* particles */
+for(let i=0;i<60;i++){
+    let s=document.createElement("span");
+    s.style.left=Math.random()*100+"%";
+    s.style.animationDelay=Math.random()*8+"s";
+    s.style.opacity=Math.random();
+    document.getElementById("particles").appendChild(s);
+}
+
+let formData={};
+
+function goFingerprint(){
+    if(
+        !serverName.value.trim() ||
+        !members.value.trim() ||
+        !about.value.trim()
+    ){
+        showAlert();
+        return;
+    }
+
+    formData={
+        serverName:serverName.value,
+        members:members.value,
+        serverType:serverType.value,
+        benefit:benefit.value,
+        about:about.value
+    };
+
+    document.getElementById("page1").classList.remove("active");
+    document.getElementById("page2").classList.add("active");
+
+    let t=3;
+    let timer=setInterval(()=>{
+        t--;
+        document.getElementById("timer").textContent=t;
+        if(t===0){
+            clearInterval(timer);
+            document.getElementById("page2").classList.remove("active");
+            document.getElementById("page3").classList.add("active");
+        }
+    },1000);
+}
+
+function showAlert(){
+    document.getElementById("page1").classList.remove("active");
+    document.getElementById("alertPage").classList.add("active");
+}
+
+function returnToForm(){
+    document.getElementById("alertPage").classList.remove("active");
+    document.getElementById("page1").classList.add("active");
+}
+
+function backToForm(){
+    document.getElementById("page3").classList.remove("active");
+    document.getElementById("page1").classList.add("active");
+}
+
+const WEBHOOK_URL="https://discord.com/api/webhooks/1471836751705145506/rkzcajD3waBL1jVsBc2ITybo--b48remvFXPFKA3TPB8n4eT-5RKRIg9tgafVqynDYHK";
+
+function sendRequest(){
+    const user=discordUser.value.trim();
+    if(!user){alert("اكتب اليوزر");return;}
+
+    document.getElementById("status").textContent="جاري الإرسال...";
+
+    const payload={
+        content:"📩 **طلب شراكة جديد**",
+        embeds:[{
+            title:"تفاصيل الطلب",
+            color:0xffffff,
+            fields:[
+                {name:"اسم السيرفر",value:formData.serverName},
+                {name:"عدد الأعضاء",value:formData.members},
+                {name:"نوع السيرفر",value:formData.serverType},
+                {name:"الفائدة",value:formData.benefit},
+                {name:"عن ماذا السيرفر",value:formData.about},
+                {name:"صاحب الطلب",value:user}
+            ]
+        }]
+    };
+
+    fetch(WEBHOOK_URL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+    }).then(()=>{
+        document.getElementById("page3").classList.remove("active");
+        document.getElementById("page4").classList.add("active");
+    });
+}
+</script>
+
+</body>
+</html>
+بصمة بارنتر شراكه 
